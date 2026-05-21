@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('last_name');
             $table->unsignedTinyInteger('gender');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('tel', 11);
             $table->string('address');
             $table->string('building')->nullable();
