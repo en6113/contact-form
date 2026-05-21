@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TagRequest;
+use App\Http\Requests\StoreTagRequest;
+use App\Http\Requests\UpdateTagRequest;
 use App\Models\Tag;
 
 class TagController extends Controller
@@ -10,7 +11,7 @@ class TagController extends Controller
     /**
      * タグを追加する(新規作成)
      */
-    public function store(TagRequest $request)
+    public function store(StoreTagRequest $request)
     {
         Tag::create($request->validated());
 
@@ -21,7 +22,7 @@ class TagController extends Controller
     /**
      * タグを編集する
      */
-    public function edit(tag $tag)
+    public function edit(Tag $tag)
     {
         return view('admin/tags/edit', compact('tag'));
     }
@@ -29,7 +30,7 @@ class TagController extends Controller
     /**
      * タグを更新する
      */
-    public function update(TagRequest $request, tag $tag)
+    public function update(UpdateTagRequest $request, Tag $tag)
     {
         $tag->update($request->validated());
 
@@ -40,7 +41,7 @@ class TagController extends Controller
     /**
      * タグを削除する
      */
-    public function destroy(tag $tag)
+    public function destroy(Tag $tag)
     {
         // 中間テーブル（contact_tag_table）の関連データを削除
         $tag->contacts()->detach();
