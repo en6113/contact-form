@@ -13,17 +13,15 @@ class ContactSeeder extends Seeder
      */
     public function run(): void
     {
-        Contact::factory()->count(20)->create();
-
-        /* モデルでリレーション定義したら変更する
         $tags = Tag::all();
 
-        Contact::factory()
-            ->count(20)
-            ->hasAttached($tags, function () {
-                return ['count' => rand(1, 3)]; // 1〜3件をランダムに選ぶ設定
-            })
-            ->create();
-        */
+        $contacts = Contact::factory()->count(20)->create();
+
+        // 各contactに対してランダムに1〜3個のタグを紐付ける(中間テーブルに保存)
+        foreach ($contacts as $contact) {
+            $randomTags = $tags->random(rand(1, 3));
+
+            $contact->tags()->attach($randomTags);
         }
+    }
 }
