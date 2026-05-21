@@ -12,6 +12,13 @@
             <!-- Adminタイトル -->
             <h2 class="text-center text-2xl font-serif text-amber-900 mb-6">Admin</h2>
 
+            <!-- メッセージ表示 -->
+            @if (session('success'))
+                <div class="mb-4 max-w-7xl mx-auto px-4 py-3 bg-green-100 border border-green-400 text-green-700 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <!-- 検索フォーム -->
             <div class="mb-4">
                 <form class="flex flex-wrap items-center gap-3" action="/admin" method="get">
@@ -84,28 +91,28 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @forelse ($contacts as $contact)
-                            <tr>
-                                <td class="px-6 py-4 text-sm text-gray-700">{{ $contact->first_name }} {{ $contact->last_name }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-700">
-                                    @php
-                                        $genderLabels = [1 => '男性', 2 => '女性', 3 => 'その他'];
-                                    @endphp
-                                    {{ $genderLabels[$contact->gender] ?? '' }}
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-700">{{ $contact->email }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-700">{{ $contact->category->content ?? '' }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-700">
-                                    @if(method_exists($contact, 'tags'))
-                                        @foreach ($contact->tags as $tag)
-                                            <span class="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded mr-1">{{ $tag->name }}</span>
-                                        @endforeach
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 text-sm">
-                                    <a href="/admin/contacts/{{ $contact->id }}"
-                                        class="text-amber-600 hover:text-amber-800">詳細</a>
-                                </td>
-                            </tr>
+                                                    <tr>
+                                                        <td class="px-6 py-4 text-sm text-gray-700">{{ $contact->last_name }} {{ $contact->first_name }}</td>
+                                                        <td class="px-6 py-4 text-sm text-gray-700">
+                                                            @php
+    $genderLabels = [1 => '男性', 2 => '女性', 3 => 'その他'];
+                                                            @endphp
+                                                            {{ $genderLabels[$contact->gender] ?? '' }}
+                                                        </td>
+                                                        <td class="px-6 py-4 text-sm text-gray-700">{{ $contact->email }}</td>
+                                                        <td class="px-6 py-4 text-sm text-gray-700">{{ $contact->category->content ?? '' }}</td>
+                                                        <td class="px-6 py-4 text-sm text-gray-700">
+                                                            @if(method_exists($contact, 'tags'))
+                                                                @foreach ($contact->tags as $tag)
+                                                                    <span class="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded mr-1">{{ $tag->name }}</span>
+                                                                @endforeach
+                                                            @endif
+                                                        </td>
+                                                        <td class="px-6 py-4 text-sm">
+                                                            <a href="/admin/contacts/{{ $contact->id }}"
+                                                                class="text-amber-600 hover:text-amber-800">詳細</a>
+                                                        </td>
+                                                    </tr>
                         @empty
                             <tr>
                                 <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">データがありません</td>
