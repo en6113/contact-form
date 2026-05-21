@@ -16,7 +16,6 @@ class Contact extends Model
         'last_name',
         'email',
         'gender',
-        'email',
         'tel',
         'address',
         'building',
@@ -38,17 +37,5 @@ class Contact extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
-    }
-
-    /**
-     * 性別を取得
-     */
-    public function getGenderAttribute(): string
-    {
-        return match ($this->gender) {
-            1 => '男性',
-            2 => '女性',
-            3 => 'その他',
-        };
     }
 }
