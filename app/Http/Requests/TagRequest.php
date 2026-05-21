@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class TagRequest extends FormRequest
 {
@@ -23,7 +22,7 @@ class TagRequest extends FormRequest
         return [
             'name' => 'required|string|max:50|unique',
             'tag_ids' => 'nullable|array',
-            'tag_ids.*' => 'integer|exists:tags,id'
+            'tag_ids.*' => 'integer|exists:tags,id',
         ];
     }
 

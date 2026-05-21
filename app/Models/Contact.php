@@ -11,6 +11,19 @@ class Contact extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'gender',
+        'email',
+        'tel',
+        'address',
+        'building',
+        'category_id',
+        'detail',
+    ];
+
     /**
      * このコンタクト（問い合わせ）が属するカテゴリーを取得
      */

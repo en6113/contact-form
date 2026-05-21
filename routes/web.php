@@ -1,23 +1,20 @@
 <?php
 
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// 仮ルート
-Route::get('/contacts', fn() => 'お問い合わせフォーム入力ページ(準備中)')->name('contact.index');
-Route::post('/contacts/confirm', fn() => 'お問い合わせフォーム確認ページ(準備中)')->name('contact.confirm');
-Route::get('/thanks', fn() => 'サンクスページ(準備中)')->name('contacts.thanks');
-/* ContactControllerを実装したら書き直す
+//ユーザー用ルート
 Route::get('/contacts', [ContactController::class,'index'])->name('contact.index');
-Route::post('/contacts/confirm', [ContactController::class,'store'])->name('contact.confirm');
+Route::post('/contacts/confirm', [ContactController::class, 'confirm'])->name('contact.confirm');
+Route::post('/contacts', [ContactController::class,'store'])->name('contact.store');
 Route::get('/thanks', [ContactController::class,'thanks'])->name('contact.thanks');
-*/
 
-// ログイン後仮ルート
+// 管理者用ルート
 Route::middleware('auth')->group(function () {
     // 管理画面
     Route::get('/admin', fn() => '管理画面一覧（準備中）')->name('admin.index');
