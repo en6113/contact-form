@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,14 +30,8 @@ Route::middleware('auth')->group(function () {
     */
 
     //タグ関係
-    Route::post('/admin/tags', fn() => 'タグ追加（準備中）');
-    Route::get('/admin/tags/{tag}/edit', fn() => 'タグ編集ページ（準備中）');
-    Route::post('/admin/tags/{tag}/edit', fn() => 'タグ更新（準備中）');
-    Route::delete('/admin/tags/{tag}', fn() => 'タグ削除（準備中）');
-    /* TagController実装したら書き直す
     Route::post('/admin/tags', [TagController::class,'store']);
     Route::get('/admin/tags/{tag}/edit', [TagController::class,'edit']);
     Route::post('/admin/tags/{tag}/edit', [TagController::class,'update']);
-    Route::delete('/admin/tags/{tag}', [TagController::class,'destroy'])
-    */
+    Route::delete('/admin/tags/{tag}', [TagController::class, 'destroy']);
 });
