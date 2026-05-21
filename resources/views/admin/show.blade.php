@@ -12,7 +12,7 @@
             <h2 class="text-center text-2xl font-serif text-amber-900 mb-6">お問い合わせ詳細</h2>
 
             @php
-$genderLabels = [1 => '男性', 2 => '女性', 3 => 'その他'];
+                $genderLabels = [1 => '男性', 2 => '女性', 3 => 'その他'];
             @endphp
 
             <!-- 詳細表示 -->
