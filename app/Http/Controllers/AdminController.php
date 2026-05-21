@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\IndexContactRequest;
 use App\Models\Contact;
 use App\Models\Category;
+use App\Models\Tag;
 
 class AdminController extends Controller
 {
@@ -46,8 +47,9 @@ class AdminController extends Controller
         $contacts = $query->paginate(7)->appends($request->query());;
 
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.index', compact('contacts','categories'));
+        return view('admin.index', compact('contacts','categories','tags'));
     }
 
     /**

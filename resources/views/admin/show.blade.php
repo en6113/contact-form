@@ -12,7 +12,7 @@
             <h2 class="text-center text-2xl font-serif text-amber-900 mb-6">お問い合わせ詳細</h2>
 
             @php
-                $genderLabels = [1 => '男性', 2 => '女性', 3 => 'その他'];
+$genderLabels = [1 => '男性', 2 => '女性', 3 => 'その他'];
             @endphp
 
             <!-- 詳細表示 -->
@@ -109,7 +109,7 @@
                     class="px-8 py-3 bg-[#7d7470] hover:bg-[#6b5f57] border border-transparent rounded font-medium text-white transition">
                     一覧に戻る
                 </a>
-                <form action="/admin/contacts/{{ $contact->id }}" method="post">
+                <form action="/admin/contacts/{{ $contact->id }}" method="post" onsubmit="return confirm('本当に削除しますか？');">
                     @csrf
                     @method('DELETE')
                     <button type="submit"

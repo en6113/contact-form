@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TagRequest extends FormRequest
+class StoreTagRequest extends FormRequest
 {
     /**
      * リクエストの認可
@@ -20,9 +20,7 @@ class TagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:50|unique',
-            'tag_ids' => 'nullable|array',
-            'tag_ids.*' => 'integer|exists:tags,id',
+            'name' => 'required|string|max:50|unique:tags,name',
         ];
     }
 

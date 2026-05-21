@@ -10,6 +10,10 @@ class Tag extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+    ];
+
     /**
      * このタグに属するコンタクト（問い合わせ）を取得
      */
