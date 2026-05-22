@@ -44,7 +44,7 @@ class AdminController extends Controller
         }
 
         // ページネーション（appendsで検索クエリを引き継ぐ）
-        $contacts = $query->paginate(7)->appends($request->query());;
+        $contacts = $query->latest()->paginate(7)->appends($request->query());
 
         $categories = Category::all();
         $tags = Tag::all();
