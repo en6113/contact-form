@@ -14,37 +14,15 @@ class AdminController extends Controller
      */
     public function index(IndexContactRequest $request)
     {
-        $query = Contact::with('category','tags');
-
-        // キーワード検索（名前・メールの部分一致）
-        //filled() を使うことで、空文字（""）で送信された場合に処理をスキップ
-        if ($request->filled('keyword')) {
-            $keyword = $request->keyword;
-
-            $query->where(function ($q) use ($keyword) {
-                $q->where('first_name', 'like', '%' . $keyword . '%')
-                    ->orwhere('last_name', 'like', '%' . $keyword . '%')
-                    ->orwhere('email', 'like', '%' . $keyword . '%');
-            });
-        }
-
-        // 性別検索
-        if ($request->filled('gender') && $request->gender !== '0') {
-            $query->where('gender', $request->gender);
-        }
-
-        // カテゴリー検索
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        // 日付検索
-        if ($request->filled('date')) {
-            $query->whereDate('created_at', $request->date);
-        }
-
-        // ページネーション（appendsで検索クエリを引き継ぐ）
-        $contacts = $query->latest()->paginate(7)->appends($request->query());
+        //モデルに検索ロジックあり（appends():検索クエリをページネーションに引き継ぐ）
+        $contacts = Contact::with('category', 'tags')
+            ->keywordSearch($request->keyword)
+            ->genderSearch($request->gender)
+            ->categorySearch($request->category_id)
+            ->dateSearch($request->date)
+            ->latest()
+            ->paginate(7)
+            ->appends($request->query());
 
         $categories = Category::all();
         $tags = Tag::all();
