@@ -20,11 +20,11 @@ Route::middleware('auth')->group(function () {
     // 管理画面
     Route::get('/admin', [AdminController::class,'index'])->name('admin.index');
     Route::get('/admin/contacts/{contact}', [AdminController::class,'show'])->name('admin.show');
-    Route::delete('/admin/contacts/{contact}', [AdminController::class,'destroy']);
+    Route::delete('/admin/contacts/{contact}', [AdminController::class,'destroy'])->name('admin.destroy');
 
     //タグ関係
-    Route::post('/admin/tags', [TagController::class,'store']);
-    Route::get('/admin/tags/{tag}/edit', [TagController::class,'edit']);
-    Route::put('/admin/tags/{tag}', [TagController::class,'update']);
-    Route::delete('/admin/tags/{tag}', [TagController::class, 'destroy']);
+    Route::post('/admin/tags', [TagController::class,'store'])->name('tag.store');
+    Route::get('/admin/tags/{tag}/edit', [TagController::class,'edit'])->name('tag.edit');
+    Route::put('/admin/tags/{tag}', [TagController::class,'update'])->name('tag.update');
+    Route::delete('/admin/tags/{tag}', [TagController::class, 'destroy'])->name('tag.destroy');
 });

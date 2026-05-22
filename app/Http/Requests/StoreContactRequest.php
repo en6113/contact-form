@@ -14,9 +14,6 @@ class StoreContactRequest extends FormRequest
         return true;
     }
 
-    /**
-     * バリデーションルール
-     */
     public function rules(): array
     {
         return [
@@ -24,17 +21,16 @@ class StoreContactRequest extends FormRequest
             'last_name' => 'required|string|max:255',
             'gender' => 'required|integer|in:1,2,3',
             'email' => 'required|string|email|max:255',
-            'tel' => 'required|string|regex:/^[0-9]{10,11}$/',
+            'tel' => 'required|string|regex:/^0[0-9]{9,10}$/',
             'address' => 'required|string|max:255',
             'building' => 'nullable|string|max:255',
             'category_id' => 'required|integer|exists:categories,id',
             'detail' => 'required|string|max:120',
+            'tag_id' => 'nullable|array',
+            'tag_ids.*' => 'integer|exists:tags,id'
         ];
     }
 
-    /**
-     * バリデーションメッセージ
-     */
     public function messages(): array
     {
         return [
