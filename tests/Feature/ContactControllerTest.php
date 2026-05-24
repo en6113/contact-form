@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
 use App\Models\Contact;
 use App\Models\Category;
 use App\Models\Tag;
@@ -504,5 +505,70 @@ class ContactControllerTest extends TestCase
 
         $response->assertRedirect(route('contact.confirm'));
         $response->assertSessionHasErrors(['detail']);
+    }
+
+    /** @test */
+    public function ログイン済みの管理者はフィルタ条件を指定してCSVをダウンロードできる(): void
+    {
+        // Arrange
+        $user = User::factory()->create();
+        $matchCategory = Category::factory()->create();
+        $unmatchCategory = Category::factory()->create();
+
+        $matchContact = Contact::factory()->create([
+            'first_name' => '山田',
+            'gender' => 1,
+            'category_id' => $matchCategory->id,
+            'created_at' => '2026-05-24 10:00:00',
+        ]);
+        $unmatchContact = Contact::factory()->create([
+            'first_name' => '鈴木',
+            'gender' => 2,
+            'category_id' => $unmatchCategory->id,
+        ]);
+
+        // Act
+        $response = $this->actingAs($user)->get(route('contact.export', [
+            'keyword' => '山田',
+            'gender' => 1,
+            'category_id' => $matchCategory->id,
+            'date' => '2026-05-24',
+        ]));
+
+        // Assert
+        $response->assertStatus(200);
+
+        $csvContent = $response->streamedContent(); //csvの中身の取得
+        // 一致するデータが含まれ、一致しないデータが含まれていないことを検証
+        $this->assertStringContainsString($matchContact->email, $csvContent);
+        $this->assertStringNotContainsString($unmatchContact->email, $csvContent);
+    }
+
+    /** @test */
+    public function ログイン済みの管理者はフィルタ無指定時に全件を新着順でダウンロードできる(): void
+    {
+        // Arrange
+        $user = User::factory()->create();
+
+        $oldContact = Contact::factory()->create(['created_at' => now()->subDay()]);
+        $newContact = Contact::factory()->create(['created_at' => now()]);
+
+        // Act
+        $response = $this->actingAs($user)->get(route('contact.export'));
+
+        // Assert
+        $response->assertStatus(200);
+
+        $csvContent = $response->streamedContent();
+
+        // 両方のデータがあるか確認
+        $this->assertStringContainsString($newContact->email, $csvContent);
+        $this->assertStringContainsString($oldContact->email, $csvContent);
+
+        // 新着順の検証
+        $this->assertTrue(
+            strpos($csvContent, $newContact->email) < strpos($csvContent, $oldContact->email),
+            'CSVの内容が新着順（新しいものが上）になっていません。'
+        );
     }
 }
