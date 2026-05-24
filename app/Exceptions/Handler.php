@@ -3,7 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Request;
 
 class Handler extends ExceptionHandler
 {
@@ -18,13 +20,16 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-    /**
-     * Register the exception handling callbacks for the application.
-     */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (NotFoundHttpException $e, Request $request) {
+            // 元の例外が ModelNotFoundException だった場合、APIリクエストの場合
+            if ($e->getPrevious() instanceof ModelNotFoundException || $request->is('api/v1/*')) {
+                return response()->json([
+                    'error' => 'Not Found',
+                    'message' => 'お問い合わせが見つかりませんでした。'
+                ], 404);
+            }
         });
     }
 }

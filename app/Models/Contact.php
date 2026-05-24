@@ -13,14 +13,14 @@ class Contact extends Model
     use HasFactory;
 
     protected $fillable = [
+        'category_id',
         'first_name',
         'last_name',
-        'email',
         'gender',
+        'email',
         'tel',
         'address',
         'building',
-        'category_id',
         'detail',
     ];
 
@@ -61,7 +61,7 @@ class Contact extends Model
      */
     public function scopeGenderSearch(Builder $query, ?string $gender): Builder
     {
-        if (blank($gender) || $gender === '0') {
+        if (blank($gender) || $gender === '0'|| $gender === 0) {
             return $query;
         }
 
