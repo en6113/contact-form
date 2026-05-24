@@ -25,7 +25,7 @@ class IndexContactRequest extends FormRequest
             'category_id' => 'nullable|integer|exists:categories,id',
             'date' => 'nullable|date',
             'page' => 'nullable|integer|min:1',
-            'per_page => nullable|integer|min:1|max:100',
+            'per_page' => 'nullable|integer|min:1|max:100'
         ];
     }
 }
