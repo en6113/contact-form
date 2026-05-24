@@ -125,7 +125,10 @@ class ApiIndexContactTest extends TestCase
     /** @test */
     public function カテゴリフィルタに不正な値が指定された場合はバリデーションエラーになる(): void
     {
-        $response = $this->getJson(route('contacts.index', ['category_id' => 99999]));
+        $nonExistentId = Category::max('id') + 1;
+
+        $response = $this->getJson(route('contacts.index', ['category_id' => $nonExistentId]));
+
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['category_id']);
     }
