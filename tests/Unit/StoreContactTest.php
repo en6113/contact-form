@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\Tag;
-use App\Models\Contact;
 use App\Models\Category;
+use App\Models\Contact;
+use App\Models\Tag;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class StoreContactTest extends TestCase
 {
@@ -43,11 +43,11 @@ class StoreContactTest extends TestCase
     /** @test */
     public function タグ入力を受け付けることができる(): void
     {
-        //Arrange
+        // Arrange
         $contact = Contact::factory()->make();
         $tag = Tag::factory()->create();
 
-        //Act
+        // Act
         $response = $this->post(route('contact.store'), [
             'tag_ids' => [$tag->id],
             'category_id' => $contact->category_id,
@@ -60,18 +60,19 @@ class StoreContactTest extends TestCase
             'detail' => $contact->detail,
         ]);
 
-        //DBに保存されたcontactをメールアドレスを頼りに1件取り出す
+        // DBに保存されたcontactをメールアドレスを頼りに1件取り出す
         $savedContact = Contact::where('email', $contact->email)->first();
 
-        //Assert
-        $this->assertDatabaseHas('contact_tag',[
-            'contact_id' =>$savedContact->id,
+        // Assert
+        $this->assertDatabaseHas('contact_tag', [
+            'contact_id' => $savedContact->id,
             'tag_id' => $tag->id,
         ]);
     }
 
     /**
      * @test
+     *
      * @dataProvider invalidTelProvider
      */
     public function 不正な電話番号形式は拒否する(string $invalidTel): void
@@ -120,24 +121,24 @@ class StoreContactTest extends TestCase
     /** @test */
     public function １つのお問い合わせが複数のタグと同期（sync）している(): void
     {
-        //Arrange
+        // Arrange
         $contact = Contact::factory()->create();
 
         $tagA = Tag::factory()->create(['name' => 'タグA']);
         $tagB = Tag::factory()->create(['name' => 'タグB']);
         $tagC = Tag::factory()->create(['name' => 'タグC']);
 
-        //タグAと紐づいた既存データをつくり、事前に紐づけをチェック
+        // タグAと紐づいた既存データをつくり、事前に紐づけをチェック
         $contact->tags()->attach($tagA->id);
         $this->assertDatabaseHas('contact_tag', [
             'contact_id' => $contact->id,
             'tag_id' => $tagA->id,
         ]);
 
-        //Act タグB、タグCに変更して同期
+        // Act タグB、タグCに変更して同期
         $contact->tags()->sync([$tagB->id, $tagC->id]);
 
-        //Assert
+        // Assert
         $this->assertDatabaseMissing('contact_tag', [
             'contact_id' => $contact->id,
             'tag_id' => $tagA->id,

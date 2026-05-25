@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Contact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Contact;
 
 class UnauthenticatedRedirectTest extends TestCase
 {
@@ -35,7 +35,7 @@ class UnauthenticatedRedirectTest extends TestCase
     {
         // Act
         $response = $this->post(route('tag.store'), [
-            'name' => '新規タグ'
+            'name' => '新規タグ',
         ]);
 
         // Assert
@@ -48,8 +48,8 @@ class UnauthenticatedRedirectTest extends TestCase
         // Arrange
         $contact = Contact::factory()->create();
 
-        //Act
-        $response = $this->delete(route('admin.destroy',$contact));
+        // Act
+        $response = $this->delete(route('admin.destroy', $contact));
 
         // Assert
         $response->assertRedirect(route('login'));

@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
+use App\Models\Contact;
+use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Contact;
-use App\Models\Category;
-use App\Models\Tag;
 
 class ContactControllerTest extends TestCase
 {
@@ -47,11 +47,10 @@ class ContactControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-
     /** @test */
     public function バリデーション通過後、お問い合わせフォーム確認ページが表示される(): void
     {
-        //Arrange
+        // Arrange
         $contact = Contact::factory()->create();
         $data = [
             'first_name' => $contact->first_name,
@@ -64,23 +63,23 @@ class ContactControllerTest extends TestCase
             'detail' => $contact->detail,
         ];
 
-        //Act
+        // Act
         $response = $this->post(route('contact.confirm'), $data);
 
-        //Assert
+        // Assert
         $response->assertStatus(200);
     }
 
     /** @test */
     public function お問い合わせフォーム確認ページに入力内容が表示される(): void
     {
-        //Arrange
+        // Arrange
         $category = Category::factory()->create(['content' => 'カテゴリ名']);
         $tag = Tag::factory()->create(['name' => 'タグ名']);
         $data = [
             'first_name' => '太郎',
             'last_name' => '山田',
-            'gender' => '1', //男性
+            'gender' => '1', // 男性
             'email' => 'test@example.com',
             'tel' => '09012345678',
             'address' => '東京都渋谷区',
@@ -89,10 +88,10 @@ class ContactControllerTest extends TestCase
             'detail' => 'お問い合わせのテスト内容です。',
         ];
 
-        //Act
+        // Act
         $response = $this->post(route('contact.confirm'), $data);
 
-        //Assert
+        // Assert
         $response->assertStatus(200);
         $response->assertSee('山田');
         $response->assertSee('太郎');
@@ -110,7 +109,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定（そのままだとリダイレクト先がホーム画面になってしまうため）
+        // 直前のページを指定（そのままだとリダイレクト先がホーム画面になってしまうため）
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.confirm'), [
@@ -133,7 +132,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.confirm'), [
@@ -156,7 +155,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.confirm'), [
@@ -179,7 +178,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.confirm'), [
@@ -202,7 +201,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.confirm'), [
@@ -225,7 +224,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.confirm'), [
@@ -248,7 +247,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.confirm'), [
@@ -271,7 +270,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.confirm'), [
@@ -292,13 +291,13 @@ class ContactControllerTest extends TestCase
     /** @test */
     public function 送信後はお問い合わせ内容が保存され、サンクス画面へリダイレクトされる(): void
     {
-        //Arrange
+        // Arrange
         $category = Category::factory()->create(['content' => 'カテゴリ名']);
         $tag = Tag::factory()->create(['name' => 'タグ名']);
         $data = [
             'first_name' => '太郎',
             'last_name' => '山田',
-            'gender' => '1', //男性
+            'gender' => '1', // 男性
             'email' => 'test@example.com',
             'tel' => '09012345678',
             'address' => '東京都渋谷区',
@@ -307,15 +306,15 @@ class ContactControllerTest extends TestCase
             'detail' => 'お問い合わせのテスト内容です。',
         ];
 
-        //Act
+        // Act
         $response = $this->post(route('contact.store'), $data);
 
-        //Assert
+        // Assert
         $response->assertRedirect(route('contact.thanks'));
         $this->assertDatabaseHas('contacts', ['first_name' => '太郎']);
         $this->assertDatabaseHas('contacts', ['last_name' => '山田']);
         $this->assertDatabaseHas('contacts', ['gender' => '1']);
-        $this->assertDatabaseHas('contacts', ['email' =>'test@example.com']);
+        $this->assertDatabaseHas('contacts', ['email' => 'test@example.com']);
         $this->assertDatabaseHas('contacts', ['tel' => '09012345678']);
         $this->assertDatabaseHas('contacts', ['address' => '東京都渋谷区']);
         $this->assertDatabaseHas('contacts', ['category_id' => $category->id]);
@@ -328,7 +327,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定（そのままだとリダイレクト先がホーム画面になってしまうため）
+        // 直前のページを指定（そのままだとリダイレクト先がホーム画面になってしまうため）
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.store'), [
@@ -351,7 +350,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.store'), [
@@ -374,7 +373,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.store'), [
@@ -397,7 +396,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.store'), [
@@ -420,7 +419,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.store'), [
@@ -443,7 +442,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.store'), [
@@ -466,7 +465,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.store'), [
@@ -489,7 +488,7 @@ class ContactControllerTest extends TestCase
     {
         $contact = Contact::factory()->make();
 
-        //直前のページを指定
+        // 直前のページを指定
         $this->from(route('contact.confirm'));
 
         $response = $this->post(route('contact.store'), [
@@ -508,7 +507,7 @@ class ContactControllerTest extends TestCase
     }
 
     /** @test */
-    public function ログイン済みの管理者はフィルタ条件を指定してCSVをダウンロードできる(): void
+    public function ログイン済みの管理者はフィルタ条件を指定して_cs_vをダウンロードできる(): void
     {
         // Arrange
         $user = User::factory()->create();
@@ -538,7 +537,7 @@ class ContactControllerTest extends TestCase
         // Assert
         $response->assertStatus(200);
 
-        $csvContent = $response->streamedContent(); //csvの中身の取得
+        $csvContent = $response->streamedContent(); // csvの中身の取得
         // 一致するデータが含まれ、一致しないデータが含まれていないことを検証
         $this->assertStringContainsString($matchContact->email, $csvContent);
         $this->assertStringNotContainsString($unmatchContact->email, $csvContent);

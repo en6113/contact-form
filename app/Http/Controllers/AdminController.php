@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IndexContactRequest;
-use App\Models\Contact;
 use App\Models\Category;
+use App\Models\Contact;
 use App\Models\Tag;
 
 class AdminController extends Controller
@@ -14,7 +14,7 @@ class AdminController extends Controller
      */
     public function index(IndexContactRequest $request)
     {
-        //モデルに検索ロジックあり（appends():検索クエリをページネーションに引き継ぐ）
+        // モデルに検索ロジックあり（appends():検索クエリをページネーションに引き継ぐ）
         $contacts = Contact::with('category', 'tags')
             ->keywordSearch($request->keyword)
             ->genderSearch($request->gender)
@@ -27,23 +27,23 @@ class AdminController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
 
-        return view('admin.index', compact('contacts','categories','tags'));
+        return view('admin.index', compact('contacts', 'categories', 'tags'));
     }
 
     /**
      * お問い合わせ詳細ページ表示
      */
-    public function show(contact $contact)
+    public function show(Contact $contact)
     {
-        $contact->load('category','tags');
+        $contact->load('category', 'tags');
 
-        return view('admin.show',compact('contact'));
+        return view('admin.show', compact('contact'));
     }
 
     /**
      * お問い合わせの削除
      */
-    public function destroy(contact $contact)
+    public function destroy(Contact $contact)
     {
         $contact->delete();
 

@@ -2,22 +2,23 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Requests\ExportContactRequest;
-use Illuminate\Support\Facades\Validator;
-use App\Models\User;
 use App\Models\Category;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Validator;
+use Tests\TestCase;
 
 class ContactExportTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * バリデーションを実行して結果を返す補助メソッド
      */
     private function validate(array $data): bool
     {
-        $request = new ExportContactRequest();
+        $request = new ExportContactRequest;
 
         // 実際のFormRequestに定義されている rules() メソッドを使ってバリデータを作る
         $validator = Validator::make($data, $request->rules());
@@ -48,7 +49,7 @@ class ContactExportTest extends TestCase
     public function キーワードが255文字以下であればバリデーションを通過する(): void
     {
         // Act
-        $result = $this->validate(['keyword' => str_repeat('あ', 255),]);
+        $result = $this->validate(['keyword' => str_repeat('あ', 255)]);
 
         // Assert
         $this->assertTrue($result);
@@ -69,15 +70,15 @@ class ContactExportTest extends TestCase
     /** @test */
     public function 不正な性別が入力されたらバリデーションエラーになる(): void
     {
-        //Act
-        $result = $this->validate(['gender' => 4,]);
+        // Act
+        $result = $this->validate(['gender' => 4]);
 
-        //Assert
+        // Assert
         $this->assertFalse($result);
     }
 
     /** @test */
-    public function 存在しないカテゴリIDが入力されたらバリデーションエラーになる(): void
+    public function 存在しないカテゴリ_i_dが入力されたらバリデーションエラーになる(): void
     {
         // Arrange
         $user = User::factory()->create();

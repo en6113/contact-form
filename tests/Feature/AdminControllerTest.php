@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
+use App\Models\Contact;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Contact;
-use App\Models\Category;
-use App\Models\Tag;
 
 class AdminControllerTest extends TestCase
 {
@@ -48,23 +47,23 @@ class AdminControllerTest extends TestCase
         // Act & Assert(1ページ目の検証)
         $responsePage1 = $this->actingAs($user)->get(route('admin.index', [
             'keyword' => '山田',
-            'page' => 1
+            'page' => 1,
         ]));
 
         $responsePage1->assertStatus(200);
         $responsePage1->assertViewHas('contacts', function ($contacts) use ($otherContact) {
-            return $contacts->count() === 7 && !$contacts->contains($otherContact);
+            return $contacts->count() === 7 && ! $contacts->contains($otherContact);
         });
 
         // Act & Assert (2ページ目の検証)
         $responsePage2 = $this->actingAs($user)->get(route('admin.index', [
             'keyword' => '山田',
-            'page' => 2
+            'page' => 2,
         ]));
 
         $responsePage2->assertStatus(200);
         $responsePage2->assertViewHas('contacts', function ($contacts) use ($otherContact) {
-            return $contacts->count() === 1 && !$contacts->contains($otherContact);
+            return $contacts->count() === 1 && ! $contacts->contains($otherContact);
         });
     }
 
@@ -81,27 +80,27 @@ class AdminControllerTest extends TestCase
         // Act & Assert(1ページ目の検証)
         $responsePage1 = $this->actingAs($user)->get(route('admin.index', [
             'gender' => '1',
-            'page' => 1
+            'page' => 1,
         ]));
 
         $responsePage1->assertStatus(200);
         $responsePage1->assertViewHas('contacts', function ($contacts) use ($femaleContact, $otherContact) {
             return $contacts->count() === 7
-                && !$contacts->contains($femaleContact)
-                && !$contacts->contains($otherContact);
+                && ! $contacts->contains($femaleContact)
+                && ! $contacts->contains($otherContact);
         });
 
         // Act & Assert (2ページ目の検証)
         $responsePage2 = $this->actingAs($user)->get(route('admin.index', [
             'gender' => '1',
-            'page' => 2
+            'page' => 2,
         ]));
 
         $responsePage2->assertStatus(200);
         $responsePage2->assertViewHas('contacts', function ($contacts) use ($femaleContact, $otherContact) {
             return $contacts->count() === 1
-                && !$contacts->contains($femaleContact)
-                && !$contacts->contains($otherContact);
+                && ! $contacts->contains($femaleContact)
+                && ! $contacts->contains($otherContact);
         });
     }
 
@@ -120,23 +119,23 @@ class AdminControllerTest extends TestCase
         // Act & Assert(1ページ目の検証)
         $responsePage1 = $this->actingAs($user)->get(route('admin.index', [
             'category_id' => $categoryA->id,
-            'page' => 1
+            'page' => 1,
         ]));
 
         $responsePage1->assertStatus(200);
         $responsePage1->assertViewHas('contacts', function ($contacts) use ($contactB) {
-            return $contacts->count() === 7 && !$contacts->contains($contactB);
+            return $contacts->count() === 7 && ! $contacts->contains($contactB);
         });
 
         // Act & Assert (2ページ目の検証)
         $responsePage2 = $this->actingAs($user)->get(route('admin.index', [
             'category_id' => $categoryA->id,
-            'page' => 2
+            'page' => 2,
         ]));
 
         $responsePage2->assertStatus(200);
         $responsePage2->assertViewHas('contacts', function ($contacts) use ($contactB) {
-            return $contacts->count() === 1 && !$contacts->contains($contactB);
+            return $contacts->count() === 1 && ! $contacts->contains($contactB);
         });
     }
 
@@ -157,23 +156,23 @@ class AdminControllerTest extends TestCase
         // Act & Assert(1ページ目の検証)
         $responsePage1 = $this->actingAs($user)->get(route('admin.index', [
             'date' => '2026-05-20',
-            'page' => 1
+            'page' => 1,
         ]));
 
         $responsePage1->assertStatus(200);
         $responsePage1->assertViewHas('contacts', function ($contacts) use ($otherContact) {
-            return $contacts->count() === 7 && !$contacts->contains($otherContact);
+            return $contacts->count() === 7 && ! $contacts->contains($otherContact);
         });
 
         // Act & Assert (2ページ目の検証)
         $responsePage2 = $this->actingAs($user)->get(route('admin.index', [
             'date' => '2026-05-20',
-            'page' => 2
+            'page' => 2,
         ]));
 
         $responsePage2->assertStatus(200);
         $responsePage2->assertViewHas('contacts', function ($contacts) use ($otherContact) {
-            return $contacts->count() === 1 && !$contacts->contains($otherContact);
+            return $contacts->count() === 1 && ! $contacts->contains($otherContact);
         });
     }
 
@@ -184,7 +183,7 @@ class AdminControllerTest extends TestCase
         $user = User::factory()->create();
         $category = Category::factory()->create(['content' => 'カテゴリ名']);
         $contact = Contact::factory()->create([
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
 
         $response = $this->actingAs($user)->get(route('admin.show', $contact));
@@ -199,7 +198,7 @@ class AdminControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $contact = Contact::factory()->create([
-            'email' => 'destroy@example.com'
+            'email' => 'destroy@example.com',
         ]);
 
         $response = $this->actingAs($user)->delete(route('admin.destroy', $contact));

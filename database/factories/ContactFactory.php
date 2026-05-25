@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Category;
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Contact>
+ * @extends Factory<Contact>
  */
 class ContactFactory extends Factory
 {
@@ -22,7 +23,7 @@ class ContactFactory extends Factory
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'gender' => fake()->randomElement([1, 2, 3]),
-            'email'=> fake()->email(),
+            'email' => fake()->email(),
             'tel' => fake()->numerify('090########'),
             'address' => fake()->address(),
             'detail' => fake()->randomElement([

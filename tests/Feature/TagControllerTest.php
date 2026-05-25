@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Tag;
 
 class TagControllerTest extends TestCase
 {
@@ -45,7 +45,7 @@ class TagControllerTest extends TestCase
             'name' => '更新前のタグ',
         ]);
 
-        $response = $this->actingAs($user)->put(route('tag.update',$tag), [
+        $response = $this->actingAs($user)->put(route('tag.update', $tag), [
             'name' => '更新後のタグ',
         ]);
 
@@ -63,7 +63,7 @@ class TagControllerTest extends TestCase
             'name' => '削除するタグ',
         ]);
 
-        $response = $this->actingAs($user)->delete(route('tag.destroy',$tag));
+        $response = $this->actingAs($user)->delete(route('tag.destroy', $tag));
 
         $response->assertRedirect(route('admin.index'));
         $this->AssertDatabaseMissing('tags', [

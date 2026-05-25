@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ContactResource;
-use App\Models\Contact;
 use App\Http\Requests\Api\V1\IndexContactRequest;
 use App\Http\Requests\Api\V1\StoreContactRequest;
 use App\Http\Requests\Api\V1\UpdateContactRequest;
-use Illuminate\Support\Facades\DB;
+use App\Http\Resources\ContactResource;
+use App\Models\Contact;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class ContactController extends Controller
 {
@@ -20,7 +20,7 @@ class ContactController extends Controller
     public function index(IndexContactRequest $request): AnonymousResourceCollection
     {
         $perPage = min((int) $request->input('per_page', 20), 100);
-        
+
         $contacts = Contact::with(['category', 'tags'])
             ->keywordSearch($request->keyword)
             ->genderSearch($request->gender)
@@ -54,14 +54,14 @@ class ContactController extends Controller
             $contact = Contact::create($validated);
 
             // 中間テーブルへの保存
-            if (!empty($validated['tag_ids']) && is_array($validated['tag_ids'])) {
+            if (! empty($validated['tag_ids']) && is_array($validated['tag_ids'])) {
                 $contact->tags()->attach($validated['tag_ids']);
             }
 
             return $contact;
         });
 
-        return (new ContactResource($contact->load(['category','tags'])))
+        return (new ContactResource($contact->load(['category', 'tags'])))
             ->additional(['message' => 'お問い合わせを登録しました'])
             ->response()
             ->setStatusCode(201);
@@ -75,10 +75,10 @@ class ContactController extends Controller
         $validated = $request->validated();
         $contact->update($validated);
 
-        if (!empty($validated['tag_ids']) && is_array($validated['tag_ids'])) {
-        $contact->tags()->sync($validated['tag_ids']);
+        if (! empty($validated['tag_ids']) && is_array($validated['tag_ids'])) {
+            $contact->tags()->sync($validated['tag_ids']);
         } else {
-        $contact->tags()->sync([]); // タグが未選択で送られてきた場合に既存のタグを外す
+            $contact->tags()->sync([]); // タグが未選択で送られてきた場合に既存のタグを外す
         }
 
         return (new ContactResource($contact))

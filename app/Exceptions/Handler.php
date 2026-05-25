@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -27,7 +27,7 @@ class Handler extends ExceptionHandler
             if ($e->getPrevious() instanceof ModelNotFoundException || $request->is('api/v1/*')) {
                 return response()->json([
                     'error' => 'Not Found',
-                    'message' => 'お問い合わせが見つかりませんでした。'
+                    'message' => 'お問い合わせが見つかりませんでした。',
                 ], 404);
             }
         });

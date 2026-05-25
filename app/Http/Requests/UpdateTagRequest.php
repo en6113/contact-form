@@ -27,8 +27,8 @@ class UpdateTagRequest extends FormRequest
                 'required',
                 'string',
                 'max:50',
-                //tagsテーブルのnameカラムで重複チェック。ただし、現在のtagのidは除外する
-                Rule::unique('tags','name')->ignore($tag->id),
+                // tagsテーブルのnameカラムで重複チェック。ただし、現在のtagのidは除外する
+                Rule::unique('tags', 'name')->ignore($tag->id),
             ],
         ];
     }

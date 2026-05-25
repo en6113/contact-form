@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Tag;
-use App\Models\Contact;
-use App\Http\Requests\StoreContactRequest;
 use App\Http\Requests\ExportContactRequest;
+use App\Http\Requests\StoreContactRequest;
+use App\Models\Category;
+use App\Models\Contact;
+use App\Models\Tag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContactController extends Controller
@@ -19,7 +19,7 @@ class ContactController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
 
-        return view('contact.index',compact('categories','tags'));
+        return view('contact.index', compact('categories', 'tags'));
     }
 
     /**
@@ -33,11 +33,11 @@ class ContactController extends Controller
 
         // タグを選択していない場合は空のコレクション、選択している場合はそのタグだけをwhereInで取得する
         $tags = collect();
-        if (!empty($validated['tag_ids'])) {
+        if (! empty($validated['tag_ids'])) {
             $tags = Tag::whereIn('id', $validated['tag_ids'])->get();
         }
 
-        return view('contact.confirm',compact('validated','category','tags'));
+        return view('contact.confirm', compact('validated', 'category', 'tags'));
     }
 
     /**
@@ -67,7 +67,7 @@ class ContactController extends Controller
 
     /**
      * 検索結果をBOM付きCSVとしてエクスポートする
-     * @param ExportContactRequest $request
+     *
      * @return StreamedResponse
      */
     public function export(ExportContactRequest $request)
@@ -78,10 +78,10 @@ class ContactController extends Controller
             ->categorySearch($request->category_id)
             ->dateSearch($request->date)
             ->latest()
-            ->cursor(); //データを少しずつ読み込んでCSVに書き出す
+            ->cursor(); // データを少しずつ読み込んでCSVに書き出す
 
         // ヘッダー情報を設定（ダウンロードを促す設定）
-        $fileName = 'contacts_' . now()->format('YmdHis') . '.csv';
+        $fileName = 'contacts_'.now()->format('YmdHis').'.csv';
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
@@ -94,8 +94,8 @@ class ContactController extends Controller
 
             // CSVの1行目（ヘッダー）を出力
             $headerRow = [
-                'ID', '氏名', '性別', 'メール', '電話', '住所', 
-                '建物', 'カテゴリ', '内容', '作成日時'
+                'ID', '氏名', '性別', 'メール', '電話', '住所',
+                '建物', 'カテゴリ', '内容', '作成日時',
             ];
             fputcsv($stream, $headerRow);
 
@@ -104,7 +104,7 @@ class ContactController extends Controller
                 // 性別の数値を文字列に変換
                 $genderText = $contact->gender === 1 ? '男性' : ($contact->gender === 2 ? '女性' : 'その他');
                 // first_nameとlast_nameを氏名に統合
-                $fullName = $contact->last_name . ' ' . $contact->first_name;
+                $fullName = $contact->last_name.' '.$contact->first_name;
 
                 $row = [
                     $contact->id,

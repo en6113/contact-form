@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\Models\Category;
+use App\Models\Contact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Contact;
-use App\Models\Category;
 
 class ApiIndexContactTest extends TestCase
 {
@@ -18,13 +18,13 @@ class ApiIndexContactTest extends TestCase
         $targetContact = Contact::factory()->create([
             'first_name' => '太郎',
             'last_name' => '山田',
-            'email' => 'yamada@example.com'
+            'email' => 'yamada@example.com',
         ]);
 
         $otherContact = Contact::factory()->create([
             'first_name' => '次郎',
             'last_name' => '佐藤',
-            'email' => 'sato@example.com'
+            'email' => 'sato@example.com',
         ]);
 
         // Act
@@ -75,9 +75,9 @@ class ApiIndexContactTest extends TestCase
     /** @test */
     public function 日付フィルタが有効である(): void
     {
-        $targetContact = Contact::factory()->create(['created_at' => '2026-05-20 10:00:00',]);
+        $targetContact = Contact::factory()->create(['created_at' => '2026-05-20 10:00:00']);
 
-        $otherContact = Contact::factory()->create(['created_at' => '2026-04-20 10:00:00',]);
+        $otherContact = Contact::factory()->create(['created_at' => '2026-04-20 10:00:00']);
 
         // Act
         $response = $this->getJson(route('contacts.index', ['date' => '2026-05-20']));
@@ -97,7 +97,7 @@ class ApiIndexContactTest extends TestCase
         // Act & Assert(1ページ目の検証)
         $response = $this->getJson(route('contacts.index', [
             'page' => 1,
-            'per_page' => 7
+            'per_page' => 7,
         ]));
 
         $response->assertStatus(200);
@@ -106,7 +106,7 @@ class ApiIndexContactTest extends TestCase
         // Act & Assert(2ページ目の検証)
         $response = $this->getJson(route('contacts.index', [
             'page' => 2,
-            'per_page' => 7
+            'per_page' => 7,
         ]));
 
         $response->assertStatus(200);

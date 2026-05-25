@@ -2,12 +2,11 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\User;
-use App\Models\Tag;
 use App\Models\Category;
 use App\Models\Contact;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class IndexContactTest extends TestCase
 {
@@ -33,13 +32,13 @@ class IndexContactTest extends TestCase
 
         // Act
         $response = $this->actingAs($user)->get(route('admin.index', [
-            'keyword' => '山田'
+            'keyword' => '山田',
         ]));
 
         // Assert
         $response->assertStatus(200);
         $response->assertViewHas('contacts', function ($contacts) use ($targetContact, $otherContact) {
-            return $contacts->contains($targetContact) && !$contacts->contains($otherContact);
+            return $contacts->contains($targetContact) && ! $contacts->contains($otherContact);
         });
     }
 
@@ -55,15 +54,15 @@ class IndexContactTest extends TestCase
 
         // Act
         $response = $this->actingAs($user)->get(route('admin.index', [
-            'gender' => '1' //男性
+            'gender' => '1', // 男性
         ]));
 
         // Assert
         $response->assertStatus(200);
         $response->assertViewHas('contacts', function ($contacts) use ($maleContact, $femaleContact, $otherContact) {
             return $contacts->contains($maleContact)
-                && !$contacts->contains($femaleContact)
-                && !$contacts->contains($otherContact);
+                && ! $contacts->contains($femaleContact)
+                && ! $contacts->contains($otherContact);
         });
     }
 
@@ -79,7 +78,7 @@ class IndexContactTest extends TestCase
 
         // Act
         $response = $this->actingAs($user)->get(route('admin.index', [
-            'gender' => '0'
+            'gender' => '0',
         ]));
 
         // Assert
@@ -104,13 +103,13 @@ class IndexContactTest extends TestCase
 
         // Act
         $response = $this->actingAs($user)->get(route('admin.index', [
-            'category_id' => $categoryA->id
+            'category_id' => $categoryA->id,
         ]));
 
         // Assert
         $response->assertStatus(200);
         $response->assertViewHas('contacts', function ($contacts) use ($contactA, $contactB) {
-            return $contacts->contains($contactA) && !$contacts->contains($contactB);
+            return $contacts->contains($contactA) && ! $contacts->contains($contactB);
         });
     }
 
@@ -130,13 +129,13 @@ class IndexContactTest extends TestCase
 
         // Act
         $response = $this->actingAs($user)->get(route('admin.index', [
-            'date' => '2026-05-20'
+            'date' => '2026-05-20',
         ]));
 
         // Assert
         $response->assertStatus(200);
         $response->assertViewHas('contacts', function ($contacts) use ($targetContact, $otherContact) {
-            return $contacts->contains($targetContact) && !$contacts->contains($otherContact);
+            return $contacts->contains($targetContact) && ! $contacts->contains($otherContact);
         });
     }
 }

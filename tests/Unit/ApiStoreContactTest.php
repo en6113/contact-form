@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use App\Models\Contact;
 use App\Models\Tag;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ApiStoreContactTest extends TestCase
 {
@@ -28,18 +28,18 @@ class ApiStoreContactTest extends TestCase
         ]);
 
         $response->assertStatus(201);
-        //IDが分からないためdata.idに何かしらの数字（ID）が入っていることを確認
+        // IDが分からないためdata.idに何かしらの数字（ID）が入っていることを確認
         $response->assertJsonPath('data.id', 1);
     }
 
     /** @test */
     public function タグ入力を受け付けることができる(): void
     {
-        //Arrange
+        // Arrange
         $contact = Contact::factory()->make();
         $tag = Tag::factory()->create();
 
-        //Act
+        // Act
         $response = $this->postJson(route('contacts.store'), [
             'first_name' => $contact->first_name,
             'last_name' => $contact->last_name,
@@ -49,23 +49,24 @@ class ApiStoreContactTest extends TestCase
             'address' => $contact->address,
             'category_id' => $contact->category_id,
             'tag_ids' => [$tag->id],
-            'detail' => $contact->detail
+            'detail' => $contact->detail,
         ]);
 
-        //DBに保存されたcontactをメールアドレスを頼りに1件取り出す
+        // DBに保存されたcontactをメールアドレスを頼りに1件取り出す
         $savedContact = Contact::where('email', $contact->email)->first();
 
-        //Assert
+        // Assert
         $response->assertStatus(201);
         // tags配列の中に作成したタグの情報が含まれているかを検証
         $response->assertJsonFragment([
             'id' => $tag->id,
-            'name' => $tag->name
+            'name' => $tag->name,
         ]);
     }
 
     /**
      * @test
+     *
      * @dataProvider invalidTelProvider
      */
     public function 不正な電話番号形式は拒否する(string $invalidTel): void
@@ -96,7 +97,7 @@ class ApiStoreContactTest extends TestCase
             '桁数が足りない（10桁未満）' => ['09012345'],
             '桁数が多い（12桁以上）' => ['090123456789'],
             '全角数字が含まれる' => ['０９０12345678'],
-            '文字が含まれる' => ['0901234567a']
+            '文字が含まれる' => ['0901234567a'],
         ];
     }
 }

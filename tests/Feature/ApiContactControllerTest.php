@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
+use App\Models\Contact;
+use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Contact;
-use App\Models\Category;
-use App\Models\Tag;
 
 class ApiContactControllerTest extends TestCase
 {
@@ -17,7 +17,7 @@ class ApiContactControllerTest extends TestCase
     // =========================================================================
 
     /** @test */
-    public function お問い合わせ一覧をJSON形式で取得できる(): void
+    public function お問い合わせ一覧を_jso_n形式で取得できる(): void
     {
         // Arrange
         Contact::factory()->count(20)->create();
@@ -35,13 +35,13 @@ class ApiContactControllerTest extends TestCase
     {
         // Arrange
         $targetContact = Contact::factory()->count(21)->create(['last_name' => '山田']);
-        $otherContact = Contact::factory()->create(['last_name' => '佐藤',]);
+        $otherContact = Contact::factory()->create(['last_name' => '佐藤']);
 
         // Act$Assert(1ページ目の検証)
         $responsePage1 = $this->getJson(route('contacts.index', [
             'keyword' => '山田',
             'per_page' => 20,
-            'page' =>1,
+            'page' => 1,
         ]));
 
         $responsePage1->assertStatus(200);
@@ -72,7 +72,7 @@ class ApiContactControllerTest extends TestCase
         $responsePage1 = $this->getJson(route('contacts.index', [
             'gender' => '1',
             'per_page' => 20,
-            'page' => 1
+            'page' => 1,
         ]));
 
         $responsePage1->assertStatus(200);
@@ -83,7 +83,7 @@ class ApiContactControllerTest extends TestCase
         $responsePage2 = $this->getJson(route('contacts.index', [
             'gender' => '1',
             'per_page' => 20,
-            'page' => 2
+            'page' => 2,
         ]));
 
         $responsePage2->assertStatus(200);
@@ -105,7 +105,7 @@ class ApiContactControllerTest extends TestCase
         $responsePage1 = $this->getJson(route('contacts.index', [
             'category_id' => $categoryA->id,
             'per_page' => 20,
-            'page' => 1
+            'page' => 1,
         ]));
 
         $responsePage1->assertStatus(200);
@@ -116,7 +116,7 @@ class ApiContactControllerTest extends TestCase
         $responsePage2 = $this->getJson(route('contacts.index', [
             'category_id' => $categoryA->id,
             'per_page' => 20,
-            'page' => 2
+            'page' => 2,
         ]));
 
         $responsePage2->assertStatus(200);
@@ -135,7 +135,7 @@ class ApiContactControllerTest extends TestCase
         $responsePage1 = $this->getJson(route('contacts.index', [
             'date' => '2026-05-20',
             'per_page' => 20,
-            'page' => 1
+            'page' => 1,
         ]));
 
         $responsePage1->assertStatus(200);
@@ -146,7 +146,7 @@ class ApiContactControllerTest extends TestCase
         $responsePage2 = $this->getJson(route('contacts.index', [
             'date' => '2026-05-20',
             'per_page' => 20,
-            'page' => 2
+            'page' => 2,
         ]));
 
         $responsePage2->assertStatus(200);
@@ -169,13 +169,13 @@ class ApiContactControllerTest extends TestCase
     // =========================================================================
 
     /** @test */
-    public function お問い合わせ詳細にアクセスするとJSON形式の詳細が返る(): void
+    public function お問い合わせ詳細にアクセスすると_jso_n形式の詳細が返る(): void
     {
         // Arrange
         $category = Category::factory()->create();
         $tag = Tag::factory()->create();
         $contact = Contact::factory()->create([
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
 
         $contact->tags()->attach($tag->id);
@@ -196,21 +196,21 @@ class ApiContactControllerTest extends TestCase
                 'address' => $contact->address,
                 'category' => [
                     'id' => $category->id,
-                    'content' => $category->content
+                    'content' => $category->content,
                 ],
                 'tags' => [
                     [
                         'id' => $tag->id,
-                        'name' => $tag->name
-                    ]
+                        'name' => $tag->name,
+                    ],
                 ],
                 'detail' => $contact->detail,
-            ]
+            ],
         ]);
     }
 
     /** @test */
-    public function 存在しないIDでお問い合わせ詳細にアクセスすると404エラーJSONが返る(): void
+    public function 存在しない_i_dでお問い合わせ詳細にアクセスすると404エラー_jso_nが返る(): void
     {
         // Arrange
         $nonExistentId = Contact::max('id') + 1;
@@ -230,19 +230,19 @@ class ApiContactControllerTest extends TestCase
     /** @test */
     public function お問い合わせを作成するとレコードが作成され201が返る(): void
     {
-        //Arrange
+        // Arrange
         $category = Category::factory()->create();
         $tag = Tag::factory()->create();
         $contactData = Contact::factory()->make(['category_id' => $category->id])->toArray();
 
         $contactData['tag_ids'] = [$tag->id];
 
-        //Act
+        // Act
         $response = $this->postJson(route('contacts.store'), $contactData);
-        
-        $newContactId = $response->json('data.id'); //新しく作られたContactのIDを取得
 
-        //Assert
+        $newContactId = $response->json('data.id'); // 新しく作られたContactのIDを取得
+
+        // Assert
         $response->assertStatus(201);
         $this->assertDatabaseHas('contacts', [
             'id' => $newContactId,
@@ -261,8 +261,8 @@ class ApiContactControllerTest extends TestCase
     /** @test */
     public function お問い合わせ作成時にバリデーションエラーがある場合は422が返る(): void
     {
-        //Act
-        $response = $this->postJson(route('contacts.store'),['email' => 'user_example.com']);
+        // Act
+        $response = $this->postJson(route('contacts.store'), ['email' => 'user_example.com']);
 
         $response->assertStatus(422);
     }
@@ -283,12 +283,12 @@ class ApiContactControllerTest extends TestCase
             'address' => '東京都新宿区...',
             'category_id' => $category->id,
             'tag_ids' => [$tag->id],
-            'detail' => 'お問い合わせ内容のテストです。'
+            'detail' => 'お問い合わせ内容のテストです。',
         ];
 
         // 正しいデータに定義外のパラメータを混ぜる
         $requestData = array_merge($validData, [
-            'spam' => 'spam_value'
+            'spam' => 'spam_value',
         ]);
 
         // Act
@@ -319,12 +319,12 @@ class ApiContactControllerTest extends TestCase
         $response->assertStatus(200);
         $this->assertDatabaseHas('contacts', [
             'id' => $contact->id,
-            'first_name' => '鈴木'
+            'first_name' => '鈴木',
         ]);
     }
 
     /** @test */
-    public function 存在しないIDでお問い合わせを更新しようとすると404が返る(): void
+    public function 存在しない_i_dでお問い合わせを更新しようとすると404が返る(): void
     {
         // Arrange (絶対に存在しないIDを動的に生成)
         $nonExistentId = Contact::max('id') + 1;
@@ -343,7 +343,7 @@ class ApiContactControllerTest extends TestCase
         $contact = Contact::factory()->create(['email' => 'user@example.com']);
 
         // Act
-        $response = $this->putJson(route('contacts.update', $contact),['email' => 'user_example.com']);
+        $response = $this->putJson(route('contacts.update', $contact), ['email' => 'user_example.com']);
 
         // Assert
         $response->assertStatus(422);
@@ -370,7 +370,7 @@ class ApiContactControllerTest extends TestCase
     }
 
     /** @test */
-    public function 存在しないIDでお問い合わせを削除しようとすると404が返る(): void
+    public function 存在しない_i_dでお問い合わせを削除しようとすると404が返る(): void
     {
         // Arrange
         $nonExistentId = Contact::max('id') + 1;
@@ -378,7 +378,7 @@ class ApiContactControllerTest extends TestCase
         // Act
         $response = $this->deleteJson(route('contacts.destroy', $nonExistentId));
 
-        //Assert
+        // Assert
         $response->assertStatus(404);
     }
 }

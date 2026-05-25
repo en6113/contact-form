@@ -27,7 +27,7 @@ class UpdateContactRequest extends FormRequest
             'category_id' => 'required|integer|exists:categories,id',
             'detail' => 'required|string|max:120',
             'tag_id' => 'nullable|array',
-            'tag_ids.*' => 'integer|exists:tags,id'
+            'tag_ids.*' => 'integer|exists:tags,id',
         ];
     }
 

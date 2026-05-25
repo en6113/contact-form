@@ -2,12 +2,12 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\User;
-use App\Models\Tag;
 use App\Models\Category;
 use App\Models\Contact;
+use App\Models\Tag;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class TagTest extends TestCase
 {
@@ -74,7 +74,7 @@ class TagTest extends TestCase
         Tag::factory()->create(['name' => '重複するタグ名']);
         $tag = Tag::factory()->create(['name' => '更新前のタグ名']);
 
-        $response = $this->actingAs($user)->put(route('tag.update',$tag), [
+        $response = $this->actingAs($user)->put(route('tag.update', $tag), [
             'name' => '重複するタグ名',
         ]);
 
@@ -104,23 +104,23 @@ class TagTest extends TestCase
     /** @test */
     public function 中間テーブルを介して1つのタグが複数のお問い合わせに紐づいている(): void
     {
-        //Arrange
+        // Arrange
         $tag = Tag::factory()->create(['name' => '1つのタグ']);
         $category = Category::factory()->create();
 
         $contactA = Contact::factory()->create([
             'category_id' => $category->id,
-            'detail' => '複数のお問い合わせ1'
+            'detail' => '複数のお問い合わせ1',
         ]);
         $contactB = Contact::factory()->create([
             'category_id' => $category->id,
-            'detail' => '複数のお問い合わせ2'
+            'detail' => '複数のお問い合わせ2',
         ]);
 
-        //Act
+        // Act
         $tag->contacts()->attach([$contactA->id, $contactB->id]);
 
-        //Assert
+        // Assert
         $this->assertCount(2, $tag->contacts);
         $this->assertTrue($tag->contacts->contains($contactA));
         $this->assertTrue($tag->contacts->contains($contactB));
