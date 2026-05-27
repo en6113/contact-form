@@ -19,7 +19,7 @@ class TagTest extends TestCase
         $contacts = Contact::factory()->count(2)->create();
 
         // Act
-        $tag->contacts()->attach($contacts->pluck('id'))->toArray();
+        $tag->contacts()->attach($contacts->pluck('id'));
         $tag->load('contacts');
 
         // Assert
