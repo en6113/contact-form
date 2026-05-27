@@ -32,7 +32,7 @@
 
 ## ER図
 
-![ER図](docs/images/erd.png)
+![ER図](docs\images\20260527_erd.png)
 
 
 ## 環境構築手順
@@ -40,7 +40,6 @@
 ###前提条件
 * Docker Desktop がインストールされ、起動していること
 * Git がインストールされていること
-* ※エイリアス設定（`sail` だけの省略コマンド）の説明は省略しています。
 
 ---
 
@@ -88,22 +87,33 @@ docker run --rm \
 ./vendor/bin/sail up -d
 ```
 
-3-3. アプリケーションキー（暗号化用の鍵）を自動生成します。
+3-3. エイリアスを設定して 'sail' だけでコマンドを実行できるようにします（任意）。  
 ```bash
-./vendor/bin/sail artisan key:generate
+echo "alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'" >> ~/.zshrc
+
+# または bash の場合
+echo "alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'" >> ~/.bashrc
+
+# シェルを再起動するか、新しいターミナルを開いてエイリアスを有効にする
+exec $SHELL
+```
+
+3-4. アプリケーションキー（暗号化用の鍵）を自動生成します。
+```bash
+sail artisan key:generate
 ```
 
 ###4．データベースの準備  
 以下のコマンドでテーブルを作成し、初期(テスト)データを投入します。
 ```bash
-./vendor/bin/sail artisan migrate --seed
+sail artisan migrate --seed
 ```
 
 ###5．フロントエンドの準備  
 フロントエンドの依存パッケージ（Vite, Tailwind CSSなど）をインストールし、起動します。
 ```bash
-./vendor/bin/sail npm install
-./vendor/bin/sail npm run dev
+sail npm install
+sail npm run dev
 ```
 > 注意: sail npm run dev は実行したまま（ターミナルを開いたまま）にしておく必要があります。
 
@@ -112,6 +122,16 @@ docker run --rm \
 * **アプリケーション**: http://localhost
 * **phpMyAdmin** (データベース管理): http://localhost:8080
 
+## テストの実行手順
+
+すべてのテストを実行する
+```bash
+sail artisan test
+```
+カバレッジ付きで実行する場合:
+```bash
+sail artisan test --coverage
+```
 
 ## 使用技術
 - **OS** : Linux
@@ -142,4 +162,4 @@ http://localhost
 
 ## 作成者
 
-圓　まり
+en6113
