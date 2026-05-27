@@ -1,30 +1,24 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Request;
 
 use App\Http\Requests\ExportContactRequest;
 use App\Models\Category;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
-class ContactExportTest extends TestCase
+class ExportContactRequestTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * バリデーションを実行して結果を返す補助メソッド
-     */
-    private function validate(array $data): bool
+    // 偽装したFormRequestからバリデータを作成する
+    private function makeValidator(array $data)
     {
         $request = new ExportContactRequest;
 
         // 実際のFormRequestに定義されている rules() メソッドを使ってバリデータを作る
-        $validator = Validator::make($data, $request->rules());
-
-        // バリデーションが通れば true、エラーがあれば false を返す
-        return $validator->passes();
+        return Validator::make($data, $request->rules());
     }
 
     /** @test */
@@ -34,7 +28,7 @@ class ContactExportTest extends TestCase
         $category = Category::factory()->create();
 
         // Act
-        $result = $this->validate([
+        $validator = $this->makeValidator([
             'keyword' => 'テスト',
             'gender' => 1,
             'category_id' => $category->id,
@@ -42,52 +36,60 @@ class ContactExportTest extends TestCase
         ]);
 
         // Assert
-        $this->assertTrue($result);
+        $this->assertTrue($validator->passes());
     }
 
     /** @test */
     public function キーワードが255文字以下であればバリデーションを通過する(): void
     {
         // Act
-        $result = $this->validate(['keyword' => str_repeat('あ', 255)]);
+        $validator = $this->makeValidator([
+            'keyword' => str_repeat('あ', 255),
+        ]);
 
         // Assert
-        $this->assertTrue($result);
+        $this->assertTrue($validator->passes());
     }
 
     /** @test */
     public function キーワードが256文字以上の場合はバリデーションエラーになる(): void
     {
         // Act
-        $result = $this->validate([
+        $validator = $this->makeValidator([
             'keyword' => str_repeat('あ', 256),
         ]);
 
         // Assert
-        $this->assertFalse($result);
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('keyword', $validator->errors()->messages());
     }
 
     /** @test */
     public function 不正な性別が入力されたらバリデーションエラーになる(): void
     {
         // Act
-        $result = $this->validate(['gender' => 4]);
+        $validator = $this->makeValidator([
+            'gender' => 999,
+        ]);
 
         // Assert
-        $this->assertFalse($result);
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('gender', $validator->errors()->messages());
     }
 
     /** @test */
     public function 存在しないカテゴリ_i_dが入力されたらバリデーションエラーになる(): void
     {
         // Arrange
-        $user = User::factory()->create();
         $nonExistentId = Category::max('id') + 1;
 
         // Act
-        $response = $this->actingAs($user)->get(route('contact.export', ['category_id' => $nonExistentId]));
+        $validator = $this->makeValidator([
+            'category_id' => $nonExistentId,
+        ]);
 
         // Assert
-        $response->assertSessionHasErrors(['category_id']);
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('category_id', $validator->errors()->messages());
     }
 }
